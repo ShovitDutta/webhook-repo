@@ -1,0 +1,9 @@
+{
+  "type": "module",
+  "scripts": {
+    "setup": "python -m venv .venv && npm install -g bun"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2"
+  }
+}
