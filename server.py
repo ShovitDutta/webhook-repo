@@ -26,11 +26,7 @@ logger.info("Connected to MongoDB: %s", client.server_info())
 db = client.github_events
 events = db.events
 
-@code.route("/")
-def index():
-    return render_template("webhook.html")
-
-@code.route("/webhook", methods=["POST"])
+@code.route("/", methods=["POST"])
 def webhook():
     # Verify webhook signature
     if not verify_signature(request):
@@ -112,6 +108,10 @@ def process_pull_request_event(payload):
     }
     events.insert_one(event_data)
     logger.info("Stored %s event: %s", event_type, event_data)
+
+@code.route("/webhook")
+def index():
+    return render_template("webhook.html")
 
 @code.route("/events", methods=["GET"])
 def get_events():
