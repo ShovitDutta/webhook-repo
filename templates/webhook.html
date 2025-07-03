@@ -28,44 +28,65 @@
               },
             },
             animation: {
-              "fade-in": "fadeIn 0.6s ease-out",
-              "slide-in": "slideIn 0.5s ease-out",
-              "bounce-in": "bounceIn 0.7s ease-out",
+              "fade-in": "fadeIn 0.8s ease-out",
+              "slide-in": "slideIn 0.6s ease-out",
+              "slide-up": "slideUp 0.5s ease-out",
+              "bounce-in": "bounceIn 0.8s ease-out",
               "pulse-glow": "pulseGlow 2s ease-in-out infinite",
-              float: "float 3s ease-in-out infinite",
-              shimmer: "shimmer 2s linear infinite",
-              gradient: "gradient 6s ease infinite",
+              float: "float 4s ease-in-out infinite",
+              shimmer: "shimmer 2.5s linear infinite",
+              gradient: "gradient 8s ease infinite",
+              "spin-slow": "spin 3s linear infinite",
+              wiggle: "wiggle 1s ease-in-out infinite",
+              "scale-in": "scaleIn 0.5s ease-out",
+              glow: "glow 2s ease-in-out infinite alternate",
             },
             keyframes: {
               fadeIn: {
-                "0%": { opacity: "0", transform: "translateY(20px)" },
+                "0%": { opacity: "0", transform: "translateY(30px)" },
                 "100%": { opacity: "1", transform: "translateY(0)" },
               },
               slideIn: {
-                "0%": { opacity: "0", transform: "translateX(-30px)" },
+                "0%": { opacity: "0", transform: "translateX(-50px)" },
                 "100%": { opacity: "1", transform: "translateX(0)" },
+              },
+              slideUp: {
+                "0%": { opacity: "0", transform: "translateY(50px)" },
+                "100%": { opacity: "1", transform: "translateY(0)" },
               },
               bounceIn: {
                 "0%": { opacity: "0", transform: "scale(0.3)" },
                 "50%": { opacity: "1", transform: "scale(1.05)" },
-                "70%": { transform: "scale(0.9)" },
+                "70%": { transform: "scale(0.95)" },
                 "100%": { opacity: "1", transform: "scale(1)" },
               },
               pulseGlow: {
                 "0%, 100%": { opacity: "1", transform: "scale(1)" },
-                "50%": { opacity: "0.8", transform: "scale(1.05)" },
+                "50%": { opacity: "0.7", transform: "scale(1.1)" },
               },
               float: {
                 "0%, 100%": { transform: "translateY(0px)" },
-                "50%": { transform: "translateY(-10px)" },
+                "50%": { transform: "translateY(-15px)" },
               },
               shimmer: {
-                "0%": { backgroundPosition: "-1000px 0" },
-                "100%": { backgroundPosition: "1000px 0" },
+                "0%": { backgroundPosition: "-200% 0" },
+                "100%": { backgroundPosition: "200% 0" },
               },
               gradient: {
                 "0%, 100%": { backgroundPosition: "0% 50%" },
                 "50%": { backgroundPosition: "100% 50%" },
+              },
+              wiggle: {
+                "0%, 100%": { transform: "rotate(-3deg)" },
+                "50%": { transform: "rotate(3deg)" },
+              },
+              scaleIn: {
+                "0%": { transform: "scale(0.8)", opacity: "0" },
+                "100%": { transform: "scale(1)", opacity: "1" },
+              },
+              glow: {
+                "0%": { boxShadow: "0 0 5px rgba(88, 166, 255, 0.5)" },
+                "100%": { boxShadow: "0 0 20px rgba(88, 166, 255, 0.8)" },
               },
             },
           },
@@ -75,18 +96,38 @@
     <style>
       .github-event {
         border-left-width: 4px;
-        transition: all 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+      .github-event::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transition: left 0.6s;
+      }
+      .github-event:hover::before {
+        left: 100%;
       }
       .github-event:hover {
-        transform: translateX(8px);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3),
-          0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        transform: translateX(12px) scale(1.02);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4),
+          0 0 0 1px rgba(255, 255, 255, 0.05);
       }
       .push-event {
         border-left-color: #238636;
         background: linear-gradient(
           135deg,
-          rgba(35, 134, 54, 0.1) 0%,
+          rgba(35, 134, 54, 0.15) 0%,
           rgba(35, 134, 54, 0.05) 100%
         );
       }
@@ -94,7 +135,7 @@
         border-left-color: #1f6feb;
         background: linear-gradient(
           135deg,
-          rgba(31, 111, 235, 0.1) 0%,
+          rgba(31, 111, 235, 0.15) 0%,
           rgba(31, 111, 235, 0.05) 100%
         );
       }
@@ -102,68 +143,124 @@
         border-left-color: #8b5cf6;
         background: linear-gradient(
           135deg,
-          rgba(139, 92, 246, 0.1) 0%,
+          rgba(139, 92, 246, 0.15) 0%,
           rgba(139, 92, 246, 0.05) 100%
         );
       }
       .event-icon {
-        width: 48px;
-        height: 48px;
+        width: 56px;
+        height: 56px;
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        transition: all 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+      }
+      .event-icon::before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: 50%;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .event-icon:hover::before {
+        opacity: 1;
       }
       .event-icon:hover {
-        transform: rotate(360deg) scale(1.1);
+        transform: rotate(360deg) scale(1.15);
+        filter: brightness(1.2);
       }
       .icon-push {
         background: linear-gradient(
           135deg,
-          rgba(35, 134, 54, 0.2),
+          rgba(35, 134, 54, 0.3),
           rgba(35, 134, 54, 0.1)
         );
         color: #238636;
-        box-shadow: 0 4px 15px rgba(35, 134, 54, 0.3);
+        box-shadow: 0 8px 25px rgba(35, 134, 54, 0.4);
       }
       .icon-pr {
         background: linear-gradient(
           135deg,
-          rgba(31, 111, 235, 0.2),
+          rgba(31, 111, 235, 0.3),
           rgba(31, 111, 235, 0.1)
         );
         color: #1f6feb;
-        box-shadow: 0 4px 15px rgba(31, 111, 235, 0.3);
+        box-shadow: 0 8px 25px rgba(31, 111, 235, 0.4);
       }
       .icon-merge {
         background: linear-gradient(
           135deg,
-          rgba(139, 92, 246, 0.2),
+          rgba(139, 92, 246, 0.3),
           rgba(139, 92, 246, 0.1)
         );
         color: #8b5cf6;
-        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
       }
       .glass-card {
-        background: rgba(22, 27, 34, 0.8);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(22, 27, 34, 0.85);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        position: relative;
+      }
+      .glass-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.05),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .glass-card:hover::before {
+        opacity: 1;
       }
       .gradient-bg {
         background: linear-gradient(-45deg, #0d1117, #161b22, #21262d, #0d1117);
         background-size: 400% 400%;
         animation: gradient 15s ease infinite;
+        position: relative;
+      }
+      .gradient-bg::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+            circle at 25% 25%,
+            rgba(88, 166, 255, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 75% 75%,
+            rgba(139, 92, 246, 0.1) 0%,
+            transparent 50%
+          );
+        animation: float 6s ease-in-out infinite;
       }
       .shimmer-effect {
         background: linear-gradient(
           90deg,
           rgba(255, 255, 255, 0) 0%,
-          rgba(255, 255, 255, 0.1) 50%,
+          rgba(255, 255, 255, 0.1) 20%,
+          rgba(255, 255, 255, 0.2) 50%,
+          rgba(255, 255, 255, 0.1) 80%,
           rgba(255, 255, 255, 0) 100%
         );
         background-size: 200% 100%;
-        animation: shimmer 2s infinite;
+        animation: shimmer 3s infinite;
       }
       .status-indicator {
         position: relative;
@@ -171,17 +268,17 @@
       .status-indicator::before {
         content: "";
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
         background: inherit;
         border-radius: inherit;
-        opacity: 0.6;
+        opacity: 0.4;
         animation: pulse-glow 2s ease-in-out infinite;
       }
       .floating-icon {
-        animation: float 3s ease-in-out infinite;
+        animation: float 4s ease-in-out infinite;
       }
       .loading-dots {
         display: inline-block;
@@ -206,75 +303,176 @@
           content: "...";
         }
       }
+      .neon-glow {
+        text-shadow: 0 0 10px rgba(88, 166, 255, 0.7);
+      }
+      .card-hover-effect:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      }
+      .particle-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+        background: radial-gradient(
+            circle at 20% 80%,
+            rgba(88, 166, 255, 0.05) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(139, 92, 246, 0.05) 0%,
+            transparent 50%
+          );
+      }
     </style>
   </head>
   <body class="gradient-bg min-h-screen">
-    <div class="max-w-6xl mx-auto py-8 px-4">
-      <header class="glass-card rounded-2xl shadow-2xl mb-8 overflow-hidden">
+    <div class="particle-bg"></div>
+
+    <div class="max-w-7xl mx-auto py-8 px-4 relative z-10">
+      <header
+        class="glass-card rounded-3xl shadow-2xl mb-8 overflow-hidden card-hover-effect"
+      >
         <div class="shimmer-effect absolute inset-0 opacity-20"></div>
-        <div class="relative py-8 px-8 text-center">
-          <div class="floating-icon inline-block mb-4">
-            <i class="fab fa-github text-5xl text-github-accent"></i>
+        <div class="relative py-12 px-8 text-center">
+          <div class="floating-icon inline-block mb-6">
+            <i class="fab fa-github text-6xl text-github-accent neon-glow"></i>
           </div>
           <h1
-            class="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-github-accent to-purple-400 bg-clip-text text-transparent"
+            class="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-github-accent via-purple-400 to-pink-400 bg-clip-text text-transparent animate-fade-in"
           >
             GitHub Events Monitor
           </h1>
-          <div class="flex items-center justify-center space-x-2">
+          <div
+            class="flex items-center justify-center space-x-3 animate-slide-up"
+          >
             <div
-              class="status-indicator w-3 h-3 bg-green-500 rounded-full"
+              class="status-indicator w-4 h-4 bg-green-500 rounded-full animate-pulse"
             ></div>
-            <p class="text-github-lighttext text-lg">Production Environment</p>
+            <p class="text-github-lighttext text-xl font-medium">
+              Production Environment
+            </p>
+            <div
+              class="px-4 py-2 bg-green-500/20 rounded-full border border-green-500/30"
+            >
+              <span class="text-green-400 text-sm font-semibold">LIVE</span>
+            </div>
           </div>
         </div>
       </header>
 
-      <div
-        class="glass-card rounded-2xl shadow-xl mb-8 overflow-hidden animate-fade-in"
-      >
-        <div class="p-8">
-          <div class="flex items-start space-x-6">
-            <div
-              class="flex-shrink-0 bg-gradient-to-br from-blue-500 to-purple-600 p-4 rounded-2xl text-white shadow-lg"
-            >
-              <i class="fas fa-info-circle text-2xl"></i>
-            </div>
-            <div class="flex-1">
-              <h2 class="text-2xl font-bold text-github-text mb-4">
-                Setup Instructions
-              </h2>
-              <p class="text-github-lighttext mb-4 text-lg">
-                This UI automatically updates every 15 seconds. To test:
-              </p>
-              <div class="space-y-3">
-                <div class="flex items-start space-x-3">
-                  <div
-                    class="flex-shrink-0 w-8 h-8 bg-github-accent rounded-full flex items-center justify-center text-white font-bold"
-                  >
-                    1
-                  </div>
-                  <div>
-                    <p class="text-github-text">
-                      Set up a GitHub webhook for your repository pointing to
-                    </p>
-                    <code
-                      class="bg-github-darker px-4 py-2 rounded-lg text-github-accent text-sm font-mono mt-2 inline-block border border-github-border"
+      <div class="grid lg:grid-cols-2 gap-8 mb-8">
+        <div
+          class="glass-card rounded-3xl shadow-xl overflow-hidden animate-slide-in card-hover-effect"
+        >
+          <div class="p-8">
+            <div class="flex items-start space-x-6">
+              <div
+                class="flex-shrink-0 bg-gradient-to-br from-blue-500 via-purple-600 to-pink-600 p-4 rounded-2xl text-white shadow-lg animate-pulse-glow"
+              >
+                <i class="fas fa-info-circle text-3xl"></i>
+              </div>
+              <div class="flex-1">
+                <h2
+                  class="text-3xl font-bold text-github-text mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+                >
+                  Setup Instructions
+                </h2>
+                <p class="text-github-lighttext mb-6 text-lg">
+                  This UI automatically updates every 15 seconds. To test:
+                </p>
+                <div class="space-y-4">
+                  <div class="flex items-start space-x-4 group">
+                    <div
+                      class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-github-accent to-blue-500 rounded-full flex items-center justify-center text-white font-bold shadow-lg group-hover:scale-110 transition-transform"
                     >
-                      https://webhook-repo-iipe.onrender.com/webhook
-                    </code>
+                      1
+                    </div>
+                    <div>
+                      <p class="text-github-text mb-2">
+                        Set up a GitHub webhook for your repository pointing to:
+                      </p>
+                      <div
+                        class="bg-github-darker px-6 py-3 rounded-xl border border-github-border relative group"
+                      >
+                        <code class="text-github-accent text-sm font-mono">
+                          https://webhook-repo-iipe.onrender.com/webhook
+                        </code>
+                        <div
+                          class="absolute inset-0 bg-gradient-to-r from-transparent via-github-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex items-start space-x-4 group">
+                    <div
+                      class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold shadow-lg group-hover:scale-110 transition-transform"
+                    >
+                      2
+                    </div>
+                    <p class="text-github-text">
+                      Perform actions (push, PR, merge) in your repository
+                    </p>
                   </div>
                 </div>
-                <div class="flex items-start space-x-3">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="glass-card rounded-3xl shadow-xl overflow-hidden animate-slide-in card-hover-effect"
+          style="animation-delay: 0.2s"
+        >
+          <div class="p-8">
+            <h2
+              class="text-3xl font-bold text-github-text mb-6 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent"
+            >
+              System Status
+            </h2>
+            <div class="space-y-4">
+              <div
+                class="flex items-center justify-between p-4 bg-github-darker/50 rounded-xl border border-github-border"
+              >
+                <div class="flex items-center space-x-3">
                   <div
-                    class="flex-shrink-0 w-8 h-8 bg-github-accent rounded-full flex items-center justify-center text-white font-bold"
-                  >
-                    2
-                  </div>
-                  <p class="text-github-text">
-                    Perform actions (push, PR, merge) in your repository
-                  </p>
+                    class="w-4 h-4 bg-green-500 rounded-full animate-pulse"
+                  ></div>
+                  <i class="fas fa-database text-green-400"></i>
+                  <span class="text-github-text">MongoDB</span>
                 </div>
+                <span class="text-green-400 font-semibold">Connected</span>
+              </div>
+              <div
+                class="flex items-center justify-between p-4 bg-github-darker/50 rounded-xl border border-github-border"
+              >
+                <div class="flex items-center space-x-3">
+                  <div
+                    class="w-4 h-4 bg-blue-500 rounded-full animate-pulse"
+                  ></div>
+                  <i class="fas fa-server text-blue-400"></i>
+                  <span class="text-github-text">Flask Server</span>
+                </div>
+                <span class="text-blue-400 font-semibold">Port 5000</span>
+              </div>
+              <div
+                class="flex items-center justify-between p-4 bg-github-darker/50 rounded-xl border border-github-border"
+              >
+                <div class="flex items-center space-x-3">
+                  <div
+                    class="w-4 h-4 bg-purple-500 rounded-full animate-pulse"
+                  ></div>
+                  <i
+                    class="fas fa-sync-alt text-purple-400 animate-spin-slow"
+                  ></i>
+                  <span class="text-github-text">Auto-Refresh</span>
+                </div>
+                <span class="text-purple-400 font-semibold">15s</span>
               </div>
             </div>
           </div>
@@ -282,81 +480,61 @@
       </div>
 
       <div
-        class="glass-card rounded-2xl shadow-xl overflow-hidden animate-slide-in"
+        class="glass-card rounded-3xl shadow-xl overflow-hidden animate-slide-up card-hover-effect"
       >
         <div class="p-8">
-          <div class="flex justify-between items-center mb-8">
-            <h2 class="text-3xl font-bold text-github-text">
+          <div
+            class="flex flex-col md:flex-row md:justify-between md:items-center mb-8 space-y-4 md:space-y-0"
+          >
+            <h2
+              class="text-4xl font-bold text-github-text bg-gradient-to-r from-github-accent to-purple-400 bg-clip-text text-transparent"
+            >
               Recent GitHub Events
             </h2>
-            <div class="flex items-center space-x-4 text-github-lighttext">
-              <div class="flex items-center space-x-2">
+            <div class="flex items-center space-x-6 text-github-lighttext">
+              <div
+                class="flex items-center space-x-2 bg-github-darker/50 px-4 py-2 rounded-full border border-github-border"
+              >
                 <div
                   class="w-2 h-2 bg-green-500 rounded-full animate-pulse"
                 ></div>
-                <span id="last-updated" class="text-sm"
+                <span id="last-updated" class="text-sm font-medium"
                   >Last updated: Never</span
                 >
               </div>
-              <div class="text-sm">•</div>
-              <div class="flex items-center space-x-2">
+              <div
+                class="flex items-center space-x-2 bg-github-darker/50 px-4 py-2 rounded-full border border-github-border"
+              >
                 <i class="fas fa-sync-alt animate-spin text-github-accent"></i>
-                <span class="text-sm">Polling every 15s</span>
+                <span class="text-sm font-medium">Auto-updating</span>
               </div>
             </div>
           </div>
 
           <div id="events-container" class="space-y-6">
-            <div id="no-events" class="text-center py-16">
+            <div id="no-events" class="text-center py-20">
               <div class="floating-icon mb-8">
                 <i
-                  class="fas fa-inbox text-6xl text-github-lighttext opacity-50"
+                  class="fas fa-inbox text-8xl text-github-lighttext opacity-50"
                 ></i>
               </div>
-              <p class="text-2xl font-semibold text-github-text mb-4">
+              <p class="text-3xl font-bold text-github-text mb-4">
                 No events recorded yet
               </p>
-              <p class="text-github-lighttext text-lg">
+              <p class="text-github-lighttext text-xl mb-8">
                 Perform actions in your GitHub repository to see events here
               </p>
-              <div class="mt-8 flex justify-center">
+              <div class="flex justify-center">
                 <div
-                  class="bg-gradient-to-r from-github-accent to-purple-500 px-6 py-3 rounded-full text-white font-medium"
+                  class="bg-gradient-to-r from-github-accent via-purple-500 to-pink-500 px-8 py-4 rounded-full text-white font-semibold text-lg shadow-lg animate-pulse-glow"
                 >
-                  <i class="fas fa-clock mr-2"></i>
+                  <i class="fas fa-clock mr-3"></i>
                   <span class="loading-dots">Waiting for events</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div
-        class="glass-card rounded-2xl shadow-xl mt-8 overflow-hidden animate-fade-in"
-      >
-        <div
-          class="p-6 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"
-        >
-          <div class="flex items-center space-x-3 text-github-lighttext">
-            <div class="flex items-center space-x-2">
-              <div
-                class="w-3 h-3 bg-green-500 rounded-full animate-pulse"
-              ></div>
-              <i class="fas fa-database"></i>
-            </div>
-            <span>MongoDB connected to production database</span>
-          </div>
-          <div class="flex items-center space-x-3 text-github-lighttext">
-            <div class="flex items-center space-x-2">
-              <div class="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
-              <i class="fas fa-server"></i>
-            </div>
-            <span>Flask server running on port 5000</span>
-          </div>
-        </div>
-      </div>
-
       </div>
     </div>
 
@@ -382,15 +560,15 @@
         function showError(message) {
           if (noEventsMessage) {
             noEventsMessage.innerHTML = `
-<div class="glass-card border border-red-500/20 rounded-xl p-8 text-center animate-bounce-in">
-<div class="floating-icon mb-6">
-<i class="fas fa-exclamation-triangle text-5xl text-red-400"></i>
-</div>
-<p class="text-red-300 font-semibold text-xl mb-2">Error fetching events</p>
-<p class="text-red-400 mb-4">${message}</p>
-<p class="text-sm text-github-lighttext">Make sure the Flask server is running on port 5000</p>
-</div>
-`;
+              <div class="glass-card border border-red-500/30 rounded-3xl p-12 text-center animate-bounce-in">
+                <div class="floating-icon mb-8">
+                  <i class="fas fa-exclamation-triangle text-7xl text-red-400"></i>
+                </div>
+                <p class="text-red-300 font-bold text-2xl mb-4">Error fetching events</p>
+                <p class="text-red-400 text-lg mb-6">${message}</p>
+                <p class="text-github-lighttext">Make sure the Flask server is running on port 5000</p>
+              </div>
+            `;
           }
         }
 
@@ -405,258 +583,111 @@
           eventsContainer.innerHTML = "";
 
           events.forEach((event, index) => {
-              const eventData = event.payload;
-              const eventType = event.action;
-              const timestamp = event.timestamp;
+            const eventData = event.payload;
+            const eventType = event.action;
+            const timestamp = event.timestamp;
 
-              let author,
-                fromBranch,
-                toBranch,
-                url,
-                title,
-                description,
-                iconClass,
-                eventClass;
+            let author,
+              fromBranch,
+              toBranch,
+              url,
+              title,
+              description,
+              iconClass,
+              eventClass;
 
-              switch (eventType) {
-                case "push":
-                  author = eventData.pusher.name || eventData.sender.login;
-                  toBranch = eventData.ref.split("/").pop();
-                  url = eventData.head_commit ? eventData.head_commit.url : null;
-                  title = `${author} pushed to ${toBranch}`;
-                  description = `Commit: ${eventData.head_commit ? eventData.head_commit.message : "N/A"}`;
-                  iconClass = "fas fa-arrow-up";
-                  eventClass = "push-event";
-                  break;
-                case "pull_request":
-                  author = eventData.pull_request.user.login;
-                  fromBranch = eventData.pull_request.head.ref;
-                  toBranch = eventData.pull_request.base.ref;
-                  url = eventData.pull_request.html_url;
-                  if (eventData.action === "opened") {
-                    title = `${author} opened a pull request`;
-                    description = `From ${fromBranch} to ${toBranch}`;
-                    iconClass = "fas fa-code-pull-request";
-                    eventClass = "pr-event";
-                  } else if (eventData.action === "closed" && eventData.pull_request.merged) {
-                    title = `${author} merged pull request`;
-                    description = `From ${fromBranch} to ${toBranch}`;
-                    iconClass = "fas fa-code-merge";
-                    eventClass = "merge-event";
-                  } else {
-                    return;
-                  }
-                  break;
-                case "issues":
-                  author = eventData.sender.login;
-                  url = eventData.issue.html_url;
-                  title = `${author} ${eventData.action} issue #${eventData.issue.number}`;
-                  description = `Issue: ${eventData.issue.title}`;
-                  iconClass = "fas fa-bug";
-                  eventClass = "issue-event";
-                  break;
-                case "issue_comment":
-                  author = eventData.sender.login;
-                  url = eventData.comment.html_url;
-                  title = `${author} commented on issue #${eventData.issue.number}`;
-                  description = `Issue: ${eventData.issue.title}`;
-                  iconClass = "fas fa-comment-dots";
-                  eventClass = "comment-event";
-                  break;
-                case "create":
-                  author = eventData.sender.login;
-                  title = `${author} created ${eventData.ref_type} ${eventData.ref}`;
-                  description = `Repository: ${eventData.repository.full_name}`;
-                  iconClass = "fas fa-plus-circle";
-                  eventClass = "create-event";
-                  break;
-                case "delete":
-                  author = eventData.sender.login;
-                  title = `${author} deleted ${eventData.ref_type} ${eventData.ref}`;
-                  description = `Repository: ${eventData.repository.full_name}`;
-                  iconClass = "fas fa-trash-alt";
-                  eventClass = "delete-event";
-                  break;
-                case "fork":
-                  author = eventData.sender.login;
-                  url = eventData.forkee.html_url;
-                  title = `${author} forked repository`;
-                  description = `Fork: ${eventData.forkee.full_name}`;
-                  iconClass = "fas fa-code-fork";
-                  eventClass = "fork-event";
-                  break;
-                case "star":
-                  author = eventData.sender.login;
-                  title = `${author} ${eventData.action} star on ${eventData.repository.full_name}`;
-                  description = `Stars: ${eventData.repository.stargazers_count}`;
-                  iconClass = "fas fa-star";
-                  eventClass = "star-event";
-                  break;
-                case "watch":
-                  author = eventData.sender.login;
-                  title = `${author} ${eventData.action} watching ${eventData.repository.full_name}`;
-                  description = `Watchers: ${eventData.repository.watchers_count}`;
-                  iconClass = "fas fa-eye";
-                  eventClass = "watch-event";
-                  break;
-                case "release":
-                  author = eventData.sender.login;
-                  url = eventData.release.html_url;
-                  title = `${author} ${eventData.action} release ${eventData.release.tag_name}`;
-                  description = `Release: ${eventData.release.name || eventData.release.tag_name}`;
-                  iconClass = "fas fa-tag";
-                  eventClass = "release-event";
-                  break;
-                case "commit_comment":
-                  author = eventData.sender.login;
-                  url = eventData.comment.html_url;
-                  title = `${author} commented on commit`;
-                  description = `Commit: ${eventData.comment.commit_id.substring(0, 7)}`;
-                  iconClass = "fas fa-comment";
-                  eventClass = "comment-event";
-                  break;
-                case "member":
-                  author = eventData.sender.login;
-                  title = `${author} ${eventData.action} member ${eventData.member.login}`;
-                  description = `Repository: ${eventData.repository.full_name}`;
-                  iconClass = "fas fa-user-plus";
-                  eventClass = "member-event";
-                  break;
-                case "public":
-                  author = eventData.sender.login;
-                  title = `${author} made repository public`;
-                  description = `Repository: ${eventData.repository.full_name}`;
-                  iconClass = "fas fa-globe";
-                  eventClass = "public-event";
-                  break;
-                case "fork":
-                  author = eventData.sender.login;
-                  url = eventData.forkee.html_url;
-                  title = `${author} forked repository`;
-                  description = `Fork: ${eventData.forkee.full_name}`;
-                  iconClass = "fas fa-code-fork";
-                  eventClass = "fork-event";
-                  break;
-                case "gollum":
-                  author = eventData.sender.login;
-                  title = `${author} updated wiki pages`;
-                  description = eventData.pages.map(p => p.title).join(", ");
-                  iconClass = "fas fa-book";
-                  eventClass = "wiki-event";
-                  break;
-                case "status":
-                  author = eventData.sender.login;
-                  url = eventData.commit.html_url;
-                  title = `Status for ${eventData.commit.sha.substring(0, 7)} is ${eventData.state}`;
-                  description = `Context: ${eventData.context}`;
-                  iconClass = "fas fa-info-circle";
-                  eventClass = "status-event";
-                  break;
-                case "team_add":
-                  author = eventData.sender.login;
-                  title = `${author} added team to repository`;
-                  description = `Team: ${eventData.team.name}`;
-                  iconClass = "fas fa-users";
-                  eventClass = "team-event";
-                  break;
-                case "project_card":
-                case "project_column":
-                case "project":
-                  author = eventData.sender.login;
-                  title = `${author} ${eventData.action} project item`;
-                  description = `Project: ${eventData.project_card ? eventData.project_card.column_url : eventData.project_column ? eventData.project_column.project_url : ''}`;
-                  iconClass = "fas fa-project-diagram";
-                  eventClass = "project-event";
-                  break;
-                case "label":
-                  author = eventData.sender.login;
-                  title = `${author} ${eventData.action} label ${eventData.label.name}`;
-                  description = `Repository: ${eventData.repository.full_name}`;
-                  iconClass = "fas fa-tag";
-                  eventClass = "label-event";
-                  break;
-                case "milestone":
-                  author = eventData.sender.login;
-                  title = `${author} ${eventData.action} milestone ${eventData.milestone.title}`;
-                  description = `Repository: ${eventData.repository.full_name}`;
-                  iconClass = "fas fa-flag";
-                  eventClass = "milestone-event";
-                  break;
-                case "page_build":
-                  author = eventData.sender.login;
-                  title = `Page build ${eventData.build.status}`;
-                  description = `Commit: ${eventData.build.commit.sha.substring(0, 7)}`;
-                  iconClass = "fas fa-file-code";
-                  eventClass = "build-event";
-                  break;
-                case "repository":
-                  author = eventData.sender.login;
-                  title = `${author} ${eventData.action} repository`;
-                  description = `Repository: ${eventData.repository.full_name}`;
-                  iconClass = "fas fa-book";
-                  eventClass = "repository-event";
-                  break;
-                case "watch":
-                  author = eventData.sender.login;
-                  title = `${author} ${eventData.action} watching ${eventData.repository.full_name}`;
-                  description = `Watchers: ${eventData.repository.watchers_count}`;
-                  iconClass = "fas fa-eye";
-                  eventClass = "watch-event";
-                  break;
-                default:
-                  author = eventData.sender ? eventData.sender.login : "Unknown";
-                  title = `${author} performed a ${eventType} event`;
-                  description = `Unhandled event type: ${eventType}`;
-                  iconClass = "fas fa-question-circle";
-                  eventClass = "default-event";
-                  break;
-              }
+            switch (eventType) {
+              case "push":
+                author = eventData.pusher.name || eventData.sender.login;
+                toBranch = eventData.ref.split("/").pop();
+                url = eventData.head_commit ? eventData.head_commit.url : null;
+                title = `${author} pushed to ${toBranch}`;
+                description = `Commit: ${
+                  eventData.head_commit ? eventData.head_commit.message : "N/A"
+                }`;
+                iconClass = "fas fa-arrow-up";
+                eventClass = "push-event";
+                break;
+              case "pull_request":
+                author = eventData.pull_request.user.login;
+                fromBranch = eventData.pull_request.head.ref;
+                toBranch = eventData.pull_request.base.ref;
+                url = eventData.pull_request.html_url;
+                if (eventData.action === "opened") {
+                  title = `${author} opened a pull request`;
+                  description = `From ${fromBranch} to ${toBranch}`;
+                  iconClass = "fas fa-code-pull-request";
+                  eventClass = "pr-event";
+                } else if (
+                  eventData.action === "closed" &&
+                  eventData.pull_request.merged
+                ) {
+                  title = `${author} merged pull request`;
+                  description = `From ${fromBranch} to ${toBranch}`;
+                  iconClass = "fas fa-code-merge";
+                  eventClass = "merge-event";
+                } else {
+                  return;
+                }
+                break;
+              default:
+                author = eventData.sender ? eventData.sender.login : "Unknown";
+                title = `${author} performed a ${eventType} event`;
+                description = `Event type: ${eventType}`;
+                iconClass = "fas fa-code";
+                eventClass = "push-event";
+                break;
+            }
 
-              const eventElement = document.createElement("div");
-              eventElement.className = `github-event ${eventClass} animate-bounce-in glass-card rounded-xl shadow-lg border border-github-border p-6 mb-4`;
-              eventElement.style.animationDelay = `${index * 0.1}s`;
+            const eventElement = document.createElement("div");
+            eventElement.className = `github-event ${eventClass} animate-scale-in glass-card rounded-2xl shadow-lg border border-github-border p-8 mb-6 cursor-pointer`;
+            eventElement.style.animationDelay = `${index * 0.1}s`;
 
-              if (url) {
-                eventElement.style.cursor = "pointer";
-                eventElement.addEventListener("click", () => {
-                  window.open(url, "_blank");
-                });
-              }
+            if (url) {
+              eventElement.addEventListener("click", () => {
+                window.open(url, "_blank");
+              });
+            }
 
-              eventElement.innerHTML = `
-                <div class="flex items-start space-x-4">
-                  <div class="event-icon ${eventClass.replace('-event', '-icon')}">
-                    <i class="${iconClass} text-xl"></i>
+            eventElement.innerHTML = `
+              <div class="flex items-center space-x-6">
+                <div class="event-icon ${eventClass.replace(
+                  "-event",
+                  "-icon"
+                )}">
+                  <i class="${iconClass} text-2xl"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center space-x-3 mb-3">
+                    <span class="text-github-text font-bold text-xl">${title}</span>
+                    <div class="px-3 py-1 bg-github-accent/20 rounded-full border border-github-accent/30">
+                      <span class="text-github-accent text-sm font-semibold">${eventType}</span>
+                    </div>
                   </div>
-                  <div class="flex-1">
-                    <div class="flex items-center space-x-2 mb-2 flex-wrap">
-                      <span class="author text-github-text font-semibold text-lg">${title}</span>
-                    </div>
-                    <p class="text-github-lighttext text-sm mb-2">${description}</p>
-                    <div class="flex items-center space-x-2 text-github-lighttext">
-                      <i class="far fa-clock"></i>
-                      <span class="timestamp">${timestamp}</span>
-                    </div>
+                  <p class="text-github-lighttext text-lg mb-4">${description}</p>
+                  <div class="flex items-center space-x-3 text-github-lighttext">
+                    <i class="far fa-clock text-github-accent"></i>
+                    <span class="font-medium">${timestamp}</span>
                   </div>
                 </div>
-              `;
-              eventsContainer.appendChild(eventElement);
-            });
-          }
+              </div>
+            `;
+            eventsContainer.appendChild(eventElement);
+          });
+        }
 
-          function updateLastUpdated() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-            });
-            lastUpdatedEl.textContent = `Last updated: ${timeString}`;
-          }
+        function updateLastUpdated() {
+          const now = new Date();
+          const timeString = now.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          });
+          lastUpdatedEl.textContent = `Last updated: ${timeString}`;
+        }
 
-          fetchEvents();
-          setInterval(fetchEvents, 15000);
-
+        fetchEvents();
+        setInterval(fetchEvents, 15000);
       });
     </script>
   </body>
