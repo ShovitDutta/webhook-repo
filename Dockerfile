@@ -1,9 +1,7 @@
-FROM node:18-alpine
-RUN apk add --no-cache gcc musl-dev python3-dev
-RUN python3 -m ensurepip && pip3 install --upgrade pip
+FROM python:3.11-alpine
+RUN apk add --no-cache gcc musl-dev libffi-dev
 WORKDIR /app
 COPY . .
-RUN pip3 install --no-cache-dir -r requirements.txt
-RUN npm install --force --silent
+RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
-CMD ["python3", "server.py"]
+CMD ["python", "server.py"]
