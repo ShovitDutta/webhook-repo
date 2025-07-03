@@ -140,36 +140,6 @@ python cleandb.py
 ```
 **Caution:** This will permanently delete all data in the `github_events` database.
 
-## Architecture 🏗️
-
-The application follows a client-server architecture with a Python Flask backend, a MongoDB database, and a JavaScript-powered frontend. The interaction flow is as follows:
-
-```mermaid
-graph TD
-    A[GitHub Repository] -->|Sends Webhook (POST /webhook)| B(Flask Backend server.py);
-    B -->|Verifies Signature & Stores Payload| C[MongoDB Database];
-    B -->|Serves webhook.html (GET /)| D[Frontend webhook.html];
-    D -->|Fetches Events (GET /events) every 15s| B;
-    B -->|Returns 10 Most Recent Events (JSON)| D;
-    C -->|Stores Event Payloads| C;
-```
-
-1.  **GitHub Webhook:** A GitHub repository sends webhook events (HTTP POST requests to `/webhook`) to the Flask backend whenever a configured event occurs.
-2.  **Flask Backend (`server.py`):**
-    *   Receives incoming webhooks.
-    *   Verifies the webhook signature using the `WEBHOOK_SECRET` for security.
-    *   Parses the webhook payload and stores it in the `github_events` database, specifically in the `events` collection.
-    *   Serves the main `webhook.html` file when a GET request is made to the root URL (`/`).
-    *   Exposes an API endpoint `/events` (GET) that returns the 10 most recent GitHub events from the database as a JSON array.
-3.  **MongoDB Database:** Acts as the persistent storage for all received GitHub event payloads.
-4.  **Frontend (`templates/webhook.html`):**
-    *   A single-page application that runs in the user's browser.
-    *   Periodically (every 15 seconds) fetches the latest events by making an AJAX request to the `/events` endpoint on the Flask backend.
-    *   Dynamically renders the fetched events on the web page, displaying relevant details such as the author, event type, commit message, and branch names.
-    *   Provides interactive elements, allowing users to click on an event to open its corresponding URL on GitHub.
-    *   Displays a connection status indicator to inform the user about the frontend's ability to communicate with the backend.
-5.  **`cleandb.py`:** A standalone Python utility script that connects to the MongoDB database and drops the entire `github_events` database, effectively clearing all stored event data.
-
 ## Usage 💡
 
 Once the server is running and the GitHub webhook is configured, simply navigate to `http://localhost:5000` in your browser. The frontend will automatically fetch and display new events as they are triggered in your GitHub repository.
