@@ -1,6 +1,6 @@
 FROM node:18-alpine
 WORKDIR /app
-RUN apk add --no-cache gcc musl-dev python3-dev
+RUN apk add --no-cache gcc musl-dev python3-dev python3-pip
 COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
 RUN npm install --force --silent
