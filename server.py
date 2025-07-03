@@ -9,8 +9,8 @@ from pymongo import MongoClient
 from datetime import datetime, timezone
 from flask import Flask, request, jsonify, render_template
 # -------| |---------------------------------------------------------------
-app = Flask(__name__)
-CORS(app)
+code = Flask(__name__)
+CORS(code)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 load_dotenv()
@@ -22,11 +22,11 @@ logger.info("Connected to MongoDB: %s", client.server_info())
 db = client.github_events
 events = db.events
 # -------| |---------------------------------------------------------------
-@app.route("/")
+@code.route("/")
 def index():
     return render_template("webhook.html")
 # -------| |---------------------------------------------------------------
-@app.route("/webhook", methods=["POST"])
+@code.route("/webhook", methods=["POST"])
 def webhook():
     if not verify_signature(request): return jsonify({"error": "Invalid signature"}), 403
     try:
@@ -90,7 +90,7 @@ def process_pull_request_event(payload):
     events.insert_one(event_data)
     logger.info("Stored %s event: %s", event_type, event_data)
 # -------| |---------------------------------------------------------------
-@app.route("/events", methods=["GET"])
+@code.route("/events", methods=["GET"])
 def get_events():
     try:
         latest_events = list(events.find().sort("timestamp", -1).limit(10))
@@ -108,5 +108,5 @@ def get_events():
 # -------| |---------------------------------------------------------------
 if __name__ == "__main__":
     logger.info("Starting Flask server on http://0.0.0.0:5000")
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    code.run(host="0.0.0.0", port=5000, debug=True)
 # -------| |---------------------------------------------------------------
