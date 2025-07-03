@@ -13,6 +13,10 @@ This project is a robust GitHub Events Monitor designed to capture, store, and d
 *   **Connection Status:** Provides visual feedback on the frontend's connection status to the backend. 🟢
 *   **Database Cleaning Utility:** A simple script to clear the event database. 🧹
 
+<div align="center">
+  <img src="preview.png" alt="Preview">
+</div>
+
 ## Technologies Used 🛠️
 
 ### Backend 🐍
