@@ -210,7 +210,6 @@
   </head>
   <body class="gradient-bg min-h-screen">
     <div class="max-w-6xl mx-auto py-8 px-4">
-      <!-- Header -->
       <header class="glass-card rounded-2xl shadow-2xl mb-8 overflow-hidden">
         <div class="shimmer-effect absolute inset-0 opacity-20"></div>
         <div class="relative py-8 px-8 text-center">
@@ -231,7 +230,6 @@
         </div>
       </header>
 
-      <!-- Setup Instructions -->
       <div
         class="glass-card rounded-2xl shadow-xl mb-8 overflow-hidden animate-fade-in"
       >
@@ -283,7 +281,6 @@
         </div>
       </div>
 
-      <!-- Events Container -->
       <div
         class="glass-card rounded-2xl shadow-xl overflow-hidden animate-slide-in"
       >
@@ -335,7 +332,6 @@
         </div>
       </div>
 
-      <!-- Footer -->
       <div
         class="glass-card rounded-2xl shadow-xl mt-8 overflow-hidden animate-fade-in"
       >
@@ -361,95 +357,6 @@
         </div>
       </div>
 
-      <!-- Hidden Templates -->
-      <div class="hidden">
-        <div
-          id="push-template"
-          class="github-event push-event animate-bounce-in glass-card rounded-xl shadow-lg border border-github-border p-6 mb-4"
-        >
-          <div class="flex items-start space-x-4">
-            <div class="event-icon icon-push">
-              <i class="fas fa-arrow-up text-xl"></i>
-            </div>
-            <div class="flex-1">
-              <div class="flex items-center space-x-2 mb-2">
-                <span
-                  class="author text-github-text font-semibold text-lg"
-                ></span>
-                <span class="text-github-lighttext">pushed to</span>
-                <span
-                  class="branch font-mono bg-github-darker px-3 py-1 rounded-md text-github-accent border border-github-border"
-                ></span>
-              </div>
-              <div class="flex items-center space-x-2 text-github-lighttext">
-                <i class="far fa-clock"></i>
-                <span class="timestamp"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          id="pr-template"
-          class="github-event pr-event animate-bounce-in glass-card rounded-xl shadow-lg border border-github-border p-6 mb-4"
-        >
-          <div class="flex items-start space-x-4">
-            <div class="event-icon icon-pr">
-              <i class="fas fa-code-pull-request text-xl"></i>
-            </div>
-            <div class="flex-1">
-              <div class="flex items-center space-x-2 mb-2 flex-wrap">
-                <span
-                  class="author text-github-text font-semibold text-lg"
-                ></span>
-                <span class="text-github-lighttext"
-                  >submitted a pull request from</span
-                >
-                <span
-                  class="from-branch font-mono bg-github-darker px-3 py-1 rounded-md text-github-accent border border-github-border"
-                ></span>
-                <span class="text-github-lighttext">to</span>
-                <span
-                  class="to-branch font-mono bg-github-darker px-3 py-1 rounded-md text-github-accent border border-github-border"
-                ></span>
-              </div>
-              <div class="flex items-center space-x-2 text-github-lighttext">
-                <i class="far fa-clock"></i>
-                <span class="timestamp"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          id="merge-template"
-          class="github-event merge-event animate-bounce-in glass-card rounded-xl shadow-lg border border-github-border p-6 mb-4"
-        >
-          <div class="flex items-start space-x-4">
-            <div class="event-icon icon-merge">
-              <i class="fas fa-code-merge text-xl"></i>
-            </div>
-            <div class="flex-1">
-              <div class="flex items-center space-x-2 mb-2 flex-wrap">
-                <span
-                  class="author text-github-text font-semibold text-lg"
-                ></span>
-                <span class="text-github-lighttext">merged branch</span>
-                <span
-                  class="from-branch font-mono bg-github-darker px-3 py-1 rounded-md text-github-accent border border-github-border"
-                ></span>
-                <span class="text-github-lighttext">to</span>
-                <span
-                  class="to-branch font-mono bg-github-darker px-3 py-1 rounded-md text-github-accent border border-github-border"
-                ></span>
-              </div>
-              <div class="flex items-center space-x-2 text-github-lighttext">
-                <i class="far fa-clock"></i>
-                <span class="timestamp"></span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -498,117 +405,259 @@
           eventsContainer.innerHTML = "";
 
           events.forEach((event, index) => {
-            let templateId, eventClass;
-            switch (event.action) {
-              case "PUSH":
-                templateId = "push-template";
-                eventClass = "push-event";
-                break;
-              case "PULL_REQUEST":
-                templateId = "pr-template";
-                eventClass = "pr-event";
-                break;
-              case "MERGE":
-                templateId = "merge-template";
-                eventClass = "merge-event";
-                break;
-              default:
-                return;
-            }
+            events.forEach((event, index) => {
+              const eventData = event.payload;
+              const eventType = event.action;
+              const timestamp = event.timestamp;
 
-            const template = document.getElementById(templateId);
-            if (!template) return;
+              let author,
+                fromBranch,
+                toBranch,
+                url,
+                title,
+                description,
+                iconClass,
+                eventClass;
 
-            const eventElement = template.cloneNode(true);
-            eventElement.id = "";
-            eventElement.style.display = "block";
-            eventElement.style.animationDelay = `${index * 0.1}s`;
+              switch (eventType) {
+                case "push":
+                  author = eventData.pusher.name || eventData.sender.login;
+                  toBranch = eventData.ref.split("/").pop();
+                  url = eventData.head_commit ? eventData.head_commit.url : null;
+                  title = `${author} pushed to ${toBranch}`;
+                  description = `Commit: ${eventData.head_commit ? eventData.head_commit.message : "N/A"}`;
+                  iconClass = "fas fa-arrow-up";
+                  eventClass = "push-event";
+                  break;
+                case "pull_request":
+                  author = eventData.pull_request.user.login;
+                  fromBranch = eventData.pull_request.head.ref;
+                  toBranch = eventData.pull_request.base.ref;
+                  url = eventData.pull_request.html_url;
+                  if (eventData.action === "opened") {
+                    title = `${author} opened a pull request`;
+                    description = `From ${fromBranch} to ${toBranch}`;
+                    iconClass = "fas fa-code-pull-request";
+                    eventClass = "pr-event";
+                  } else if (eventData.action === "closed" && eventData.pull_request.merged) {
+                    title = `${author} merged pull request`;
+                    description = `From ${fromBranch} to ${toBranch}`;
+                    iconClass = "fas fa-code-merge";
+                    eventClass = "merge-event";
+                  } else {
+                    return;
+                  }
+                  break;
+                case "issues":
+                  author = eventData.sender.login;
+                  url = eventData.issue.html_url;
+                  title = `${author} ${eventData.action} issue #${eventData.issue.number}`;
+                  description = `Issue: ${eventData.issue.title}`;
+                  iconClass = "fas fa-bug";
+                  eventClass = "issue-event";
+                  break;
+                case "issue_comment":
+                  author = eventData.sender.login;
+                  url = eventData.comment.html_url;
+                  title = `${author} commented on issue #${eventData.issue.number}`;
+                  description = `Issue: ${eventData.issue.title}`;
+                  iconClass = "fas fa-comment-dots";
+                  eventClass = "comment-event";
+                  break;
+                case "create":
+                  author = eventData.sender.login;
+                  title = `${author} created ${eventData.ref_type} ${eventData.ref}`;
+                  description = `Repository: ${eventData.repository.full_name}`;
+                  iconClass = "fas fa-plus-circle";
+                  eventClass = "create-event";
+                  break;
+                case "delete":
+                  author = eventData.sender.login;
+                  title = `${author} deleted ${eventData.ref_type} ${eventData.ref}`;
+                  description = `Repository: ${eventData.repository.full_name}`;
+                  iconClass = "fas fa-trash-alt";
+                  eventClass = "delete-event";
+                  break;
+                case "fork":
+                  author = eventData.sender.login;
+                  url = eventData.forkee.html_url;
+                  title = `${author} forked repository`;
+                  description = `Fork: ${eventData.forkee.full_name}`;
+                  iconClass = "fas fa-code-fork";
+                  eventClass = "fork-event";
+                  break;
+                case "star":
+                  author = eventData.sender.login;
+                  title = `${author} ${eventData.action} star on ${eventData.repository.full_name}`;
+                  description = `Stars: ${eventData.repository.stargazers_count}`;
+                  iconClass = "fas fa-star";
+                  eventClass = "star-event";
+                  break;
+                case "watch":
+                  author = eventData.sender.login;
+                  title = `${author} ${eventData.action} watching ${eventData.repository.full_name}`;
+                  description = `Watchers: ${eventData.repository.watchers_count}`;
+                  iconClass = "fas fa-eye";
+                  eventClass = "watch-event";
+                  break;
+                case "release":
+                  author = eventData.sender.login;
+                  url = eventData.release.html_url;
+                  title = `${author} ${eventData.action} release ${eventData.release.tag_name}`;
+                  description = `Release: ${eventData.release.name || eventData.release.tag_name}`;
+                  iconClass = "fas fa-tag";
+                  eventClass = "release-event";
+                  break;
+                case "commit_comment":
+                  author = eventData.sender.login;
+                  url = eventData.comment.html_url;
+                  title = `${author} commented on commit`;
+                  description = `Commit: ${eventData.comment.commit_id.substring(0, 7)}`;
+                  iconClass = "fas fa-comment";
+                  eventClass = "comment-event";
+                  break;
+                case "member":
+                  author = eventData.sender.login;
+                  title = `${author} ${eventData.action} member ${eventData.member.login}`;
+                  description = `Repository: ${eventData.repository.full_name}`;
+                  iconClass = "fas fa-user-plus";
+                  eventClass = "member-event";
+                  break;
+                case "public":
+                  author = eventData.sender.login;
+                  title = `${author} made repository public`;
+                  description = `Repository: ${eventData.repository.full_name}`;
+                  iconClass = "fas fa-globe";
+                  eventClass = "public-event";
+                  break;
+                case "fork":
+                  author = eventData.sender.login;
+                  url = eventData.forkee.html_url;
+                  title = `${author} forked repository`;
+                  description = `Fork: ${eventData.forkee.full_name}`;
+                  iconClass = "fas fa-code-fork";
+                  eventClass = "fork-event";
+                  break;
+                case "gollum":
+                  author = eventData.sender.login;
+                  title = `${author} updated wiki pages`;
+                  description = eventData.pages.map(p => p.title).join(", ");
+                  iconClass = "fas fa-book";
+                  eventClass = "wiki-event";
+                  break;
+                case "status":
+                  author = eventData.sender.login;
+                  url = eventData.commit.html_url;
+                  title = `Status for ${eventData.commit.sha.substring(0, 7)} is ${eventData.state}`;
+                  description = `Context: ${eventData.context}`;
+                  iconClass = "fas fa-info-circle";
+                  eventClass = "status-event";
+                  break;
+                case "team_add":
+                  author = eventData.sender.login;
+                  title = `${author} added team to repository`;
+                  description = `Team: ${eventData.team.name}`;
+                  iconClass = "fas fa-users";
+                  eventClass = "team-event";
+                  break;
+                case "project_card":
+                case "project_column":
+                case "project":
+                  author = eventData.sender.login;
+                  title = `${author} ${eventData.action} project item`;
+                  description = `Project: ${eventData.project_card ? eventData.project_card.column_url : eventData.project_column ? eventData.project_column.project_url : ''}`;
+                  iconClass = "fas fa-project-diagram";
+                  eventClass = "project-event";
+                  break;
+                case "label":
+                  author = eventData.sender.login;
+                  title = `${author} ${eventData.action} label ${eventData.label.name}`;
+                  description = `Repository: ${eventData.repository.full_name}`;
+                  iconClass = "fas fa-tag";
+                  eventClass = "label-event";
+                  break;
+                case "milestone":
+                  author = eventData.sender.login;
+                  title = `${author} ${eventData.action} milestone ${eventData.milestone.title}`;
+                  description = `Repository: ${eventData.repository.full_name}`;
+                  iconClass = "fas fa-flag";
+                  eventClass = "milestone-event";
+                  break;
+                case "page_build":
+                  author = eventData.sender.login;
+                  title = `Page build ${eventData.build.status}`;
+                  description = `Commit: ${eventData.build.commit.sha.substring(0, 7)}`;
+                  iconClass = "fas fa-file-code";
+                  eventClass = "build-event";
+                  break;
+                case "repository":
+                  author = eventData.sender.login;
+                  title = `${author} ${eventData.action} repository`;
+                  description = `Repository: ${eventData.repository.full_name}`;
+                  iconClass = "fas fa-book";
+                  eventClass = "repository-event";
+                  break;
+                case "watch":
+                  author = eventData.sender.login;
+                  title = `${author} ${eventData.action} watching ${eventData.repository.full_name}`;
+                  description = `Watchers: ${eventData.repository.watchers_count}`;
+                  iconClass = "fas fa-eye";
+                  eventClass = "watch-event";
+                  break;
+                default:
+                  author = eventData.sender ? eventData.sender.login : "Unknown";
+                  title = `${author} performed a ${eventType} event`;
+                  description = `Unhandled event type: ${eventType}`;
+                  iconClass = "fas fa-question-circle";
+                  eventClass = "default-event";
+                  break;
+              }
 
-            if (event.action === "PUSH") {
-              eventElement.querySelector(".author").textContent = event.author;
-              eventElement.querySelector(".branch").textContent =
-                event.to_branch;
-            } else {
-              eventElement.querySelector(".author").textContent = event.author;
-              eventElement.querySelector(".from-branch").textContent =
-                event.from_branch;
-              eventElement.querySelector(".to-branch").textContent =
-                event.to_branch;
-            }
+              const eventElement = document.createElement("div");
+              eventElement.className = `github-event ${eventClass} animate-bounce-in glass-card rounded-xl shadow-lg border border-github-border p-6 mb-4`;
+              eventElement.style.animationDelay = `${index * 0.1}s`;
 
-            eventElement.querySelector(".timestamp").textContent =
-              event.timestamp;
-            eventsContainer.appendChild(eventElement);
-          });
-        }
-
-        function updateLastUpdated() {
-          const now = new Date();
-          const timeString = now.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-          });
-          lastUpdatedEl.textContent = `Last updated: ${timeString}`;
-        }
-
-        // Initial fetch and set up polling
-        fetchEvents();
-        setInterval(fetchEvents, 15000);
-
-        // Demo events simulation
-        setTimeout(() => {
-          if (document.querySelector(".github-event") === null) {
-            createDemoEvent("push-template", {
-              author: "devuser",
-              to_branch: "main",
-              timestamp: "3rd July 2025 - 10:15 AM UTC",
-            });
-
-            setTimeout(() => {
-              createDemoEvent("pr-template", {
-                author: "coder42",
-                from_branch: "feature-login",
-                to_branch: "develop",
-                timestamp: "3rd July 2025 - 09:45 AM UTC",
-              });
-
-              setTimeout(() => {
-                createDemoEvent("merge-template", {
-                  author: "techlead",
-                  from_branch: "release-v1.2",
-                  to_branch: "main",
-                  timestamp: "2nd July 2025 - 02:30 PM UTC",
+              if (url) {
+                eventElement.style.cursor = "pointer";
+                eventElement.addEventListener("click", () => {
+                  window.open(url, "_blank");
                 });
-              }, 1000);
-            }, 1000);
+              }
+
+              eventElement.innerHTML = `
+                <div class="flex items-start space-x-4">
+                  <div class="event-icon ${eventClass.replace('-event', '-icon')}">
+                    <i class="${iconClass} text-xl"></i>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-center space-x-2 mb-2 flex-wrap">
+                      <span class="author text-github-text font-semibold text-lg">${title}</span>
+                    </div>
+                    <p class="text-github-lighttext text-sm mb-2">${description}</p>
+                    <div class="flex items-center space-x-2 text-github-lighttext">
+                      <i class="far fa-clock"></i>
+                      <span class="timestamp">${timestamp}</span>
+                    </div>
+                  </div>
+                </div>
+              `;
+              eventsContainer.appendChild(eventElement);
+            });
           }
-        }, 2000);
 
-        function createDemoEvent(templateId, data) {
-          const template = document.getElementById(templateId);
-          if (!template) return;
-
-          const eventElement = template.cloneNode(true);
-          eventElement.id = "";
-          eventElement.style.display = "block";
-
-          if (templateId === "push-template") {
-            eventElement.querySelector(".author").textContent = data.author;
-            eventElement.querySelector(".branch").textContent = data.to_branch;
-          } else {
-            eventElement.querySelector(".author").textContent = data.author;
-            eventElement.querySelector(".from-branch").textContent =
-              data.from_branch;
-            eventElement.querySelector(".to-branch").textContent =
-              data.to_branch;
+          function updateLastUpdated() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+            });
+            lastUpdatedEl.textContent = `Last updated: ${timeString}`;
           }
 
-          eventElement.querySelector(".timestamp").textContent = data.timestamp;
+          fetchEvents();
+          setInterval(fetchEvents, 15000);
 
-          if (noEventsMessage) noEventsMessage.style.display = "none";
-          eventsContainer.prepend(eventElement);
-        }
       });
     </script>
   </body>
