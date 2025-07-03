@@ -1,13 +1,17 @@
 # -------| |---------------------------------------------------------------
-from flask import Flask, request, jsonify, render_template
-from datetime import datetime, timezone
-from pymongo import MongoClient
+import os
 from flask_cors import CORS
+from dotenv import load_dotenv
+from pymongo import MongoClient
+from datetime import datetime, timezone
+from flask import Flask, request, jsonify, render_template
 # -------| |---------------------------------------------------------------
 code = Flask(__name__)
 CORS(code)
 # -------| |---------------------------------------------------------------
-client = MongoClient("mongodb://localhost:27017")
+load_dotenv()
+mongo_url = os.getenv("MONGO_URL")
+client = MongoClient(mongo_url)
 print(client.server_info())
 db = client.github_events
 events = db.events
